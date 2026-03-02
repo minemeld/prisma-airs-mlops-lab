@@ -45,8 +45,8 @@ permissions:
 env:
   SERVICE_NAME: cloud-security-advisor
   REGION: us-central1
-  PROJECT_ID: syoungberg-prod
-  GCS_MODEL_BUCKET: gs://syoungberg-airs-lab/approved-models
+  PROJECT_ID: jlimon-prod
+  GCS_MODEL_BUCKET: gs://jlimon-airs-lab/approved-models
   VLLM_IMAGE: us-docker.pkg.dev/vertex-ai/vertex-vision-model-garden-dockers/pytorch-vllm-serve:20250202_0916_RC00
 
 jobs:
@@ -173,7 +173,7 @@ jobs:
             LATEST=$(gcloud storage ls "${GCS_MODEL_BUCKET}/${MODEL_NAME}/" 2>/dev/null | tail -1 | xargs basename || echo "")
             if [ -z "$LATEST" ]; then
               echo "No published models found. Using staging model."
-              MODEL_URI="gs://syoungberg-airs-lab/raw-models/clean-advisor"
+              MODEL_URI="gs://jlimon-airs-lab/raw-models/clean-advisor"
             else
               MODEL_URI="${GCS_MODEL_BUCKET}/${MODEL_NAME}/${LATEST}"
             fi

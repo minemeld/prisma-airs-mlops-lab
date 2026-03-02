@@ -9,7 +9,7 @@ on:
       model_source:
         description: 'Source path of trained model (gs://...)'
         required: true
-        default: 'gs://syoungberg-airs-lab/raw-models/cloud-security-advisor'
+        default: 'gs://jlimon-airs-lab/raw-models/cloud-security-advisor'
 
       model_name:
         description: 'Name/ID for the published model'
@@ -50,7 +50,7 @@ permissions:
   actions: read
 
 env:
-  GCS_BLESSED_BUCKET: gs://syoungberg-airs-lab/approved-models
+  GCS_BLESSED_BUCKET: gs://jlimon-airs-lab/approved-models
 
 jobs:
   # ============================================
@@ -251,7 +251,7 @@ jobs:
         id: publish-vertex
         if: success() && needs.resolve-inputs.outputs.publish_to == 'vertex_ai'
         run: |
-          STAGING_PATH="gs://syoungberg-airs-lab/vertex-models/${{ needs.resolve-inputs.outputs.model_name }}/${{ needs.resolve-inputs.outputs.model_version }}"
+          STAGING_PATH="gs://jlimon-airs-lab/vertex-models/${{ needs.resolve-inputs.outputs.model_name }}/${{ needs.resolve-inputs.outputs.model_version }}"
           gcloud storage cp -r "$MODEL_PATH/*" "$STAGING_PATH/"
 
           gcloud ai models upload \

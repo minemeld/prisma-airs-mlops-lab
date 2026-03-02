@@ -21,7 +21,7 @@ permissions:
 env:
   SERVICE_NAME: cloud-security-advisor
   REGION: us-central1
-  PROJECT_ID: syoungberg-prod
+  PROJECT_ID: jlimon-prod
 
 jobs:
   deploy-app:

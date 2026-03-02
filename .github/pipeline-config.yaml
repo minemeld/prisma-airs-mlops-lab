@@ -42,9 +42,9 @@ model_registry:
   
   backends:
     gcs:
-      staging_bucket: gs://your-model-bucket/raw-models
-      blessed_bucket: gs://your-model-bucket/approved-models
-      scan_results_bucket: gs://your-model-bucket/scan-results
+      staging_bucket: gs://jlimon-airs-lab/raw-models
+      blessed_bucket: gs://jlimon-airs-lab/approved-models
+      scan_results_bucket: gs://jlimon-airs-lab/scan-results
     
     huggingface:
       # For private HF repos, set HF_TOKEN secret
@@ -111,7 +111,7 @@ inference:
 
   # Vertex AI - managed GPU endpoint for model inference
   vertex_ai:
-    project: your-gcp-project-id
+    project: jlimon-prod
     region: us-central1
     endpoint_display_name: cloud-security-advisor-endpoint
     machine_type: g2-standard-12

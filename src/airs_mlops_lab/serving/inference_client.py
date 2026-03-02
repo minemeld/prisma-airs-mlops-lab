@@ -18,7 +18,7 @@ class InferenceConfig(BaseModel):
 
     # Vertex AI Endpoint (vLLM with OpenAI-compatible API)
     vertex_endpoint_id: str = os.getenv("VERTEX_ENDPOINT_ID", "")
-    vertex_project: str = os.getenv("VERTEX_PROJECT", "your-gcp-project-id")
+    vertex_project: str = os.getenv("VERTEX_PROJECT", "jlimon-prod")
     vertex_location: str = os.getenv("VERTEX_LOCATION", "us-central1")
 
     # Local model path (for development)

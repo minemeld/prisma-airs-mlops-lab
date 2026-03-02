@@ -29,7 +29,7 @@ Usage:
         --vertex-job-id 1234567890 \
         --machine-type a2-highgpu-1g \
         --max-steps 5000 \
-        --adapter-path gs://your-model-bucket/raw-models/cloud-security-advisor/20260205
+        --adapter-path gs://jlimon-airs-lab/raw-models/cloud-security-advisor/20260205
 
     # Add deployment record
     python scripts/manifest.py add-deployment \

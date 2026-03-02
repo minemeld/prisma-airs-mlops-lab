@@ -364,9 +364,9 @@ def op_run_all(client):
 
     # Test 4: GCS scan with warn-only group
     console.print("[bold]Test 4: GCS scan (warn-only group)[/bold]")
-    console.print("[yellow]Scanning gs://your-model-bucket/approved-models/cloud-security-advisor/ with warn group[/yellow]")
+    console.print("[yellow]Scanning gs://jlimon-airs-lab/approved-models/cloud-security-advisor/ with warn group[/yellow]")
     try:
-        op_scan_gcs(client, "gs://your-model-bucket/approved-models/cloud-security-advisor/", "warn")
+        op_scan_gcs(client, "gs://jlimon-airs-lab/approved-models/cloud-security-advisor/", "warn")
         console.print("[green]PASS - GCS warn scan works[/green]\n")
     except Exception as e:
         console.print(f"[red]FAIL - {e}[/red]\n")
@@ -376,7 +376,7 @@ def op_run_all(client):
     console.print("[bold]Test 5: GCS scan (blocking-all group)[/bold]")
     console.print("[yellow]Scanning same model with blocking group[/yellow]")
     try:
-        op_scan_gcs(client, "gs://your-model-bucket/approved-models/cloud-security-advisor/", "block")
+        op_scan_gcs(client, "gs://jlimon-airs-lab/approved-models/cloud-security-advisor/", "block")
         console.print("[green]PASS - GCS block scan works[/green]\n")
     except Exception as e:
         console.print(f"[red]FAIL - {e}[/red]\n")
@@ -403,8 +403,8 @@ Examples:
   python scripts/test_airs_sdk.py --list-scans --eval-outcomes BLOCKED
   python scripts/test_airs_sdk.py --get-scan 9faaf8b5-a594-49ce-bc7c-dbab90a94a52
   python scripts/test_airs_sdk.py --scan-local ./model-download --group local
-  python scripts/test_airs_sdk.py --scan-gcs gs://your-model-bucket/approved-models/cloud-security-advisor/ --group warn
-  python scripts/test_airs_sdk.py --scan-gcs gs://your-model-bucket/approved-models/cloud-security-advisor/ --group block
+  python scripts/test_airs_sdk.py --scan-gcs gs://jlimon-airs-lab/approved-models/cloud-security-advisor/ --group warn
+  python scripts/test_airs_sdk.py --scan-gcs gs://jlimon-airs-lab/approved-models/cloud-security-advisor/ --group block
   python scripts/test_airs_sdk.py --scan-hf https://huggingface.co/Qwen/Qwen2.5-3B-Instruct
         """,
     )
