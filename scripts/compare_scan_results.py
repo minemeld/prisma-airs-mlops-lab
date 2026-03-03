@@ -233,9 +233,9 @@ security group configurations.
         sys.exit(1)
 
     # Verify credentials
-    if not os.getenv("AIRS_MS_CLIENT_ID") or not os.getenv("AIRS_MS_CLIENT_SECRET"):
+    if not os.getenv("MODEL_SECURITY_CLIENT_ID") or not os.getenv("MODEL_SECURITY_CLIENT_SECRET"):
         _print("[bold red]Missing AIRS credentials.[/bold red]")
-        _print("  Set AIRS_MS_CLIENT_ID and AIRS_MS_CLIENT_SECRET")
+        _print("  Set MODEL_SECURITY_CLIENT_ID and MODEL_SECURITY_CLIENT_SECRET")
         _print("  Or create .env.superuser in project root")
         sys.exit(1)
 

@@ -8,7 +8,7 @@ Re-check all items in the blockers array:
 - `gcp-project-invalid`: Run `gcloud config get-value project` — returns valid ID?
 - `gcs-buckets-missing`: Run `gcloud storage ls gs://[bucket]` — succeeds? Check pipeline-config.yaml not placeholder.
 - `gcp-iam-invalid`: Run `gcloud iam service-accounts list` — github-actions-sa exists? WIF pool exists?
-- `airs-credentials-missing`: Run `gh secret list` — AIRS_MS_CLIENT_ID, AIRS_MS_CLIENT_SECRET, TSG_ID present?
+- `airs-credentials-missing`: Run `gh secret list` — MODEL_SECURITY_CLIENT_ID, MODEL_SECURITY_CLIENT_SECRET, TSG_ID present?
 
 If any previously blocked item is now resolved, remove from blockers and celebrate:
 "Your [X] blocker is resolved! You now have access to [what this unlocks]."
@@ -62,7 +62,7 @@ gh workflow list
 ```bash
 gh secret list
 ```
-- **Pass:** AIRS_MS_CLIENT_ID, AIRS_MS_CLIENT_SECRET, TSG_ID all present
+- **Pass:** MODEL_SECURITY_CLIENT_ID, MODEL_SECURITY_CLIENT_SECRET, TSG_ID all present
 - **Fail:** Add `airs-credentials-missing` if not already blocked. Note: does NOT fail the entire module — student can proceed to Modules 1-3.
 - **Points:** 3
 

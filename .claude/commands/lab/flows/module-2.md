@@ -121,7 +121,8 @@ This builds familiarity with both monitoring surfaces. They'll use both througho
 **Hint 3 (Specific):**
 
 ```bash
-gh workflow run "Gate 1: Train Model" \
+BRANCH=$(git branch --show-current)
+gh workflow run "Gate 1: Train Model" -r "$BRANCH" \
   -f base_model="Qwen/Qwen2.5-3B-Instruct" \
   -f base_model_source="huggingface_public" \
   -f dataset="ethanolivertroy/nist-cybersecurity-training" \

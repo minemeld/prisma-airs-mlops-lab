@@ -39,34 +39,34 @@ Score per question:
 |---------|--------|
 | Correct on first try | 3 pts |
 | Correct after one retry | 2 pts |
-| Correct after hint | 1 pt |
+| Correct after guidance | 1 pt |
 | Answer given by mentor | 0 pts |
 
 Flow per question:
 1. Present the question. Wait.
 2. If correct: Award points, explain briefly, move to next.
 3. If wrong: "Not quite. Think about [concept]. Want to try again?"
-4. If wrong again: Offer a hint.
+4. If wrong again: Offer guidance — re-teach the relevant concept from the flow's Key Concepts.
 5. If still wrong: Give answer with full explanation. 0 pts.
 
-### Q1: "Why is the model NOT in the Cloud Run container? Describe the decoupled architecture."
-**Expected:** Model runs on GPU (Vertex AI endpoint with vLLM). App runs on CPU (Cloud Run, 512MB RAM). They communicate via rawPredict API. This allows independent scaling, updating, and security scanning.
-- 3 pts: explains separation + why (scaling, independence, security insertion points)
-- 2 pts: knows they're separate but vague on benefits
+### Q1: "Why does this application use a custom fine-tuned model instead of calling a commercial API like OpenAI or Anthropic?"
+**Expected:** Data sovereignty/control — the organization owns the model and training data, can run it in their own infrastructure, doesn't send sensitive queries to third parties. Also: compliance requirements, specialization on domain-specific knowledge (NIST/cybersecurity), cost at scale, no vendor lock-in.
+- 3 pts: explains multiple reasons (control, compliance, specialization, data sovereignty)
+- 2 pts: gets 1-2 reasons but misses the broader picture
 - 1 pt: minimal understanding
 - 0 pts: cannot answer
 
-### Q2: "What is rawPredict and why does the app use model='openapi' instead of the actual model name?"
-**Expected:** rawPredict sends requests directly to the serving container (vLLM). Vertex AI's vLLM launcher overrides the model name to "openapi" — requests must match this name or get rejected.
-- 3 pts: explains rawPredict + vLLM naming override
-- 2 pts: knows one but not the other
+### Q2: "Describe the three layers of model serving in this deployment. What role does each play?"
+**Expected:** (1) Serving framework (vLLM) — loads model on GPU, manages inference, exposes API. (2) Inference endpoint — the API that accepts prompts and returns completions (OpenAI-compatible format). (3) Application — user-facing service (FastAPI on Cloud Run), handles auth and business logic, calls the inference endpoint. Model runs on GPU, app runs on CPU — they're separated.
+- 3 pts: describes all three layers with their roles and the GPU/CPU separation
+- 2 pts: gets the separation but unclear on roles or missing a layer
 - 1 pt: minimal understanding
 - 0 pts: cannot answer
 
-### Q3: "Describe the 3-gate pipeline. What does each gate do, and what security checks exist today?"
-**Expected:** Gate 1 scans base model + trains. Gate 2 merges adapter + base, scans merged, publishes. Gate 3 scans deployed model, verifies provenance, deploys. Currently AIRS scanning is defined but NOT enforcing — that's what Modules 5-7 will fix.
-- 3 pts: describes all 3 gates AND notes security is not yet enforcing
-- 2 pts: describes gates but misses current security status
+### Q3: "Walk through the 3-gate pipeline. What does each gate produce, and what security checks exist right now?"
+**Expected:** Gate 1 trains and produces a LoRA adapter. Gate 2 merges adapter with base model, publishes to GCS. Gate 3 deploys model to GPU endpoint and app to Cloud Run. Currently NO security scans are enforcing — models flow from training to production unchecked. That's the gap Modules 5-7 will fix.
+- 3 pts: describes all 3 gates AND identifies that no security is enforcing
+- 2 pts: describes gates but misses the security gap
 - 1 pt: minimal understanding
 - 0 pts: cannot answer
 
@@ -85,9 +85,9 @@ Ask the student to prepare a brief summary for the group discussion: what they b
 | App Deployed | PASS/FAIL | /2 |
 | App Responds | PASS/FAIL | /2 |
 | Engagement (from flow) | — | /2 |
-| Quiz Q1: Architecture | /3 | |
-| Quiz Q2: rawPredict | /3 | |
-| Quiz Q3: 3-gate pipeline | /3 | |
+| Quiz Q1: Why custom model | /3 | |
+| Quiz Q2: Serving components | /3 | |
+| Quiz Q3: Pipeline + security gap | /3 | |
 | **Total** | | **/15** |
 
 Update lab/.progress.json:

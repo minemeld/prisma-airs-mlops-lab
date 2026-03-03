@@ -19,6 +19,32 @@
 
 ---
 
+## Challenge 5.0: Fix the Qwen Policy (Setup for Pipeline Integration)
+
+### Learning Objectives
+
+The student should be able to:
+- Make an informed policy decision about governance rules
+- Modify security group rules in SCM
+- Re-scan to verify the change, understanding that detection and enforcement are independent
+
+### Key Concepts
+
+1. **The Policy Decision**
+   - Core idea: In Module 4, the student discovered that Qwen is BLOCKED by default HF governance rules (license type `"other"` not approved, org not HF-verified). Before integrating AIRS into the pipeline, these rules need to be addressed — otherwise the pipeline will fail on every scan of the base model.
+   - This is a real enterprise decision. In the lab, change the rules. In production, security/legal/compliance would weigh in.
+   - Two options: add `other` to approved licenses + add Qwen to approved orgs, OR change both rules from blocking to non-blocking (alert-only). Recommend non-blocking — detections still appear in reports but don't block the pipeline.
+   - Show: Navigate to Default HUGGING_FACE security group in SCM. Modify the two failing rules.
+   - Check: Can the student explain the difference between disabling a rule and setting it to non-blocking?
+
+2. **Re-scan and Verify**
+   - Re-scan Qwen with the same HF security group UUID.
+   - Expected: `eval_outcome: ALLOWED` but `rules_failed: 2` — same detection, different enforcement.
+   - This is the key value prop: **same detection, configurable enforcement.**
+   - Check: Does the student understand the enterprise pattern: dev=alert, prod=block?
+
+---
+
 ## Challenge 5.1: Add Scanning to Gate 2
 
 ### Flow

@@ -89,8 +89,8 @@ jobs:
 
       - name: Install AIRS SDK
         env:
-          AIRS_MS_CLIENT_ID: ${{ secrets.AIRS_MS_CLIENT_ID }}
-          AIRS_MS_CLIENT_SECRET: ${{ secrets.AIRS_MS_CLIENT_SECRET }}
+          MODEL_SECURITY_CLIENT_ID: ${{ secrets.MODEL_SECURITY_CLIENT_ID }}
+          MODEL_SECURITY_CLIENT_SECRET: ${{ secrets.MODEL_SECURITY_CLIENT_SECRET }}
           TSG_ID: ${{ secrets.TSG_ID }}
         run: |
           python -m pip install --upgrade pip
@@ -141,8 +141,8 @@ jobs:
       - name: "🛡️ GATE 1: AIRS Security Scan"
         id: scan
         env:
-          AIRS_MS_CLIENT_ID: ${{ secrets.AIRS_MS_CLIENT_ID }}
-          AIRS_MS_CLIENT_SECRET: ${{ secrets.AIRS_MS_CLIENT_SECRET }}
+          MODEL_SECURITY_CLIENT_ID: ${{ secrets.MODEL_SECURITY_CLIENT_ID }}
+          MODEL_SECURITY_CLIENT_SECRET: ${{ secrets.MODEL_SECURITY_CLIENT_SECRET }}
           TSG_ID: ${{ secrets.TSG_ID }}
         run: |
           echo ""

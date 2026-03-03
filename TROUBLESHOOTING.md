@@ -43,7 +43,7 @@ Error: 403 Forbidden - Insufficient permissions for /mgmt/v1/pypi/authenticate
 2. Or use a pre-authenticated URL from someone with superuser access:
    ```bash
    # Get authenticated PyPI URL (requires superuser)
-   # Ensure AIRS_MS_CLIENT_ID and AIRS_MS_CLIENT_SECRET are set
+   # Ensure MODEL_SECURITY_CLIENT_ID and MODEL_SECURITY_CLIENT_SECRET are set
    ./scripts/get-pypi-url.sh
 
    # Use the URL in pip install
@@ -238,8 +238,8 @@ Error: Scan failed: Authentication error
 
 **Solution:** Add secrets to repository:
 ```bash
-gh secret set AIRS_MS_CLIENT_ID --body "your-client-id"
-gh secret set AIRS_MS_CLIENT_SECRET --body "your-secret"
+gh secret set MODEL_SECURITY_CLIENT_ID --body "your-client-id"
+gh secret set MODEL_SECURITY_CLIENT_SECRET --body "your-secret"
 gh secret set TSG_ID --body "your-tsg-id"
 ```
 
@@ -247,8 +247,8 @@ And reference in workflow:
 ```yaml
 - name: Run AIRS scan
   env:
-    AIRS_MS_CLIENT_ID: ${{ secrets.AIRS_MS_CLIENT_ID }}
-    AIRS_MS_CLIENT_SECRET: ${{ secrets.AIRS_MS_CLIENT_SECRET }}
+    MODEL_SECURITY_CLIENT_ID: ${{ secrets.MODEL_SECURITY_CLIENT_ID }}
+    MODEL_SECURITY_CLIENT_SECRET: ${{ secrets.MODEL_SECURITY_CLIENT_SECRET }}
     TSG_ID: ${{ secrets.TSG_ID }}
   run: uv run python scripts/scan_model.py MODEL --ci
 ```

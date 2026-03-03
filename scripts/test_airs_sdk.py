@@ -98,12 +98,12 @@ def resolve_group(name_or_uuid: str) -> dict:
 
 def get_client() -> ModelSecurityAPIClient:
     """Create an authenticated SDK client."""
-    client_id = os.environ.get("AIRS_MS_CLIENT_ID")
-    client_secret = os.environ.get("AIRS_MS_CLIENT_SECRET")
+    client_id = os.environ.get("MODEL_SECURITY_CLIENT_ID")
+    client_secret = os.environ.get("MODEL_SECURITY_CLIENT_SECRET")
     tsg_id = os.environ.get("TSG_ID")
 
     if not client_id or not client_secret:
-        console.print("[red]Missing AIRS_MS_CLIENT_ID / AIRS_MS_CLIENT_SECRET[/red]")
+        console.print("[red]Missing MODEL_SECURITY_CLIENT_ID / MODEL_SECURITY_CLIENT_SECRET[/red]")
         console.print("Ensure .env.superuser is present and has credentials.")
         sys.exit(1)
 

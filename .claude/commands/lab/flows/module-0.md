@@ -115,7 +115,14 @@ This challenge has 3 interactive beats. Do NOT rush through them — pause for t
     ```
     After running, explain: "The force-push was safe because this is a fresh repo with no real work yet. Now your repo shares git history with the template."
 
-    Step 3 — Verify and show results:
+    Step 3 — Set `gh` CLI default repo to `origin`:
+    ```
+    gh repo set-default origin
+    ```
+    **CRITICAL:** This prevents `gh` from accidentally targeting the upstream template repo when running `gh workflow run`, `gh secret set`, `gh run view`, etc. Without this, `gh` may silently pick `upstream` — causing workflows to trigger on the wrong repo and secrets to be written to the shared template.
+
+    Step 4 — Verify and show results:
+    - Run `gh repo set-default --view` and confirm it shows the student's repo (not the template).
     - Run `git remote -v` and show both `origin` (their private repo) and `upstream` (the template).
     - Run `git log --oneline -5` and show the shared commits (not just 'Initialize lab').
 
@@ -352,7 +359,7 @@ If the SA cannot be created or WIF cannot be configured (e.g., missing permissio
 When setting GitHub secrets, source the `.env` file and pipe values. Derive the repo name for the `-R` flag:
 ```
 REPO=$(gh repo view --json nameWithOwner -q '.nameWithOwner')
-source .env && echo "$AIRS_MS_CLIENT_ID" | gh secret set AIRS_MS_CLIENT_ID -R "$REPO"
+source .env && echo "$MODEL_SECURITY_CLIENT_ID" | gh secret set MODEL_SECURITY_CLIENT_ID -R "$REPO"
 ```
 
 ### Flow
@@ -415,8 +422,8 @@ source .env && echo "$AIRS_MS_CLIENT_ID" | gh secret set AIRS_MS_CLIENT_ID -R "$
    Guide the student to add values to `.env` (copy from `.env.example` if needed). Then set GitHub secrets:
    ```
    REPO=$(git remote get-url origin | sed 's|.*github.com/||;s|\.git$||')
-   source .env && echo "$AIRS_MS_CLIENT_ID" | gh secret set AIRS_MS_CLIENT_ID -R "$REPO"
-   source .env && echo "$AIRS_MS_CLIENT_SECRET" | gh secret set AIRS_MS_CLIENT_SECRET -R "$REPO"
+   source .env && echo "$MODEL_SECURITY_CLIENT_ID" | gh secret set MODEL_SECURITY_CLIENT_ID -R "$REPO"
+   source .env && echo "$MODEL_SECURITY_CLIENT_SECRET" | gh secret set MODEL_SECURITY_CLIENT_SECRET -R "$REPO"
    source .env && echo "$TSG_ID" | gh secret set TSG_ID -R "$REPO"
    ```
 

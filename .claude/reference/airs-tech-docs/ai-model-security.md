@@ -4,7 +4,7 @@ url: https://docs.paloaltonetworks.com/content/dam/techdocs/en_US/pdf/ai-runtime
 title: AI Model Security
 fetched: 2026-02-01T21:49:15.476Z
 pages: 62
-credentials: Use AIRS_MS_CLIENT_ID and AIRS_MS_CLIENT_SECRET for SDK authentication
+credentials: Use MODEL_SECURITY_CLIENT_ID and MODEL_SECURITY_CLIENT_SECRET for SDK authentication
 ---
 ![](images/fetchpdf-1769982541307.pdf-0-full.png)
 # AI Model Security
@@ -684,10 +684,10 @@ Secure Your AI Models with AI Model Security
     set -euo pipefail
 
     # Check required environment variables
-    : "${AIRS_MS_CLIENT_ID:?Error: AIRS_MS_CLIENT_ID not
+    : "${MODEL_SECURITY_CLIENT_ID:?Error: MODEL_SECURITY_CLIENT_ID not
     set}"
-    : "${AIRS_MS_CLIENT_SECRET:?Error:
-    AIRS_MS_CLIENT_SECRET not set}"
+    : "${MODEL_SECURITY_CLIENT_SECRET:?Error:
+    MODEL_SECURITY_CLIENT_SECRET not set}"
     : "${TSG_ID:?Error: TSG_ID not set}"
 
     # Set default endpoints
@@ -699,7 +699,7 @@ Secure Your AI Models with AI Model Security
     # Get SCM access token
     TOKEN_RESPONSE=$(curl -sf -X POST "$TOKEN_ENDPOINT" \
     -H "Content-Type: application/x-www-form-urlencoded" \
-    -u "$AIRS_MS_CLIENT_ID:$AIRS_MS_CLIENT_SECRET" \
+    -u "$MODEL_SECURITY_CLIENT_ID:$MODEL_SECURITY_CLIENT_SECRET" \
     -d "grant_type=client_credentials&scope=tsg_id:$TSG_ID") || {
     echo "Error: Failed to obtain SCM access token" >&2
     exit 1
@@ -736,8 +736,8 @@ credentials set as environment variables. The client automatically manages OAuth
 authentication with the provided credentials.
 
 ```
-    export AIRS_MS_CLIENT_ID=<your-client-id>
-    export AIRS_MS_CLIENT_SECRET=<your-client-secret>
+    export MODEL_SECURITY_CLIENT_ID=<your-client-id>
+    export MODEL_SECURITY_CLIENT_SECRET=<your-client-secret>
 
 ```
 
@@ -757,8 +757,8 @@ Secure Your AI Models with AI Model Security
 
 |Environmental Variable|Description|
 |---|---|
-|`AIRS_MS_CLIENT_ID`|Client ID of the SCM service account.|
-|`AIRS_MS_CLIENT_SECRET`|Client secret of the SCM service account.|
+|`MODEL_SECURITY_CLIENT_ID`|Client ID of the SCM service account.|
+|`MODEL_SECURITY_CLIENT_SECRET`|Client secret of the SCM service account.|
 |`TSG_ID`|TSG ID of your tenant service group.|
 |`MODEL_SECURITY_API_ENDPOINT`|URL of the AI Model Security API service.|
 

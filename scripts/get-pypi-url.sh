@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Get authenticated PyPI URL for AIRS Model Security SDK
-# Requires: AIRS_MS_CLIENT_ID, AIRS_MS_CLIENT_SECRET, TSG_ID
+# Requires: MODEL_SECURITY_CLIENT_ID, MODEL_SECURITY_CLIENT_SECRET, TSG_ID
 #
 
 set -euo pipefail
 
-: "${AIRS_MS_CLIENT_ID:?Error: AIRS_MS_CLIENT_ID not set}"
-: "${AIRS_MS_CLIENT_SECRET:?Error: AIRS_MS_CLIENT_SECRET not set}"
+: "${MODEL_SECURITY_CLIENT_ID:?Error: MODEL_SECURITY_CLIENT_ID not set}"
+: "${MODEL_SECURITY_CLIENT_SECRET:?Error: MODEL_SECURITY_CLIENT_SECRET not set}"
 : "${TSG_ID:?Error: TSG_ID not set}"
 
 TOKEN_ENDPOINT="${MODEL_SECURITY_TOKEN_ENDPOINT:-https://auth.apps.paloaltonetworks.com/oauth2/access_token}"
@@ -16,7 +16,7 @@ API_ENDPOINT="${MODEL_SECURITY_API_ENDPOINT:-https://api.sase.paloaltonetworks.c
 # Get OAuth token
 TOKEN_RESPONSE=$(curl -sf -X POST "$TOKEN_ENDPOINT" \
     -H "Content-Type: application/x-www-form-urlencoded" \
-    -u "$AIRS_MS_CLIENT_ID:$AIRS_MS_CLIENT_SECRET" \
+    -u "$MODEL_SECURITY_CLIENT_ID:$MODEL_SECURITY_CLIENT_SECRET" \
     -d "grant_type=client_credentials&scope=tsg_id:$TSG_ID") || {
     echo "Error: Failed to obtain access token" >&2
     exit 1

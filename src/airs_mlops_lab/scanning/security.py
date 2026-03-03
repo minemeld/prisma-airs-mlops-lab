@@ -86,8 +86,8 @@ def init_scanner(
     """Initialize the AIRS Model Security client.
 
     Authentication is handled via environment variables:
-    - AIRS_MS_CLIENT_ID
-    - AIRS_MS_CLIENT_SECRET
+    - MODEL_SECURITY_CLIENT_ID
+    - MODEL_SECURITY_CLIENT_SECRET
     - TSG_ID
 
     Args:

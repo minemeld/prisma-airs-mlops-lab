@@ -47,23 +47,26 @@ The application runs as a lightweight UI/API service on Cloud Run, while the hea
 ### Step 1: Run Gate 1 (Train)
 Trigger the training workflow:
 ```bash
-gh workflow run "Gate 1: Train Model" \
+BRANCH=$(git branch --show-current)
+gh workflow run "Gate 1: Train Model" -r "$BRANCH" \
   -f base_model=distilbert-base-uncased \
   -f base_model_source=huggingface_public
 ```
 *Observe AIRS scanning the model download. If blocked, the pipeline fails safely.*
 
+> **Important:** Always pass `-r "$BRANCH"` to `gh workflow run`. Without it, `gh` defaults to the `main` branch, which may have different workflow steps (e.g., AIRS scanning that requires credentials not yet configured).
+
 ### Step 2: Run Gate 2 (Publish)
 After training succeeds, verify and publish:
 ```bash
-gh workflow run "Gate 2: Publish Model" \
+gh workflow run "Gate 2: Publish Model" -r "$BRANCH" \
   -f model_source=gs://your-model-bucket/raw-models/...
 ```
 
 ### Step 3: Run Gate 3 (Deploy)
 Deploy the secured application:
 ```bash
-gh workflow run "Gate 3: Deploy" \
+gh workflow run "Gate 3: Deploy" -r "$BRANCH" \
   -f deployment_strategy=canary
 ```
 

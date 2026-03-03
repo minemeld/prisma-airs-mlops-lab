@@ -10,7 +10,7 @@
 ## How to Explore
 - Use Context7 MCP to fetch SCM API docs for IAM and service accounts
 - Look at the permissions model: what permissions exist for AI Model Security?
-- This project's scanning credentials: AIRS_MS_CLIENT_ID / CLIENT_SECRET + TSG_ID
+- This project's scanning credentials: MODEL_SECURITY_CLIENT_ID / CLIENT_SECRET + TSG_ID
 
 ## Student Activities
 - Create a custom role called "model-scanning-only" with minimum scan permissions

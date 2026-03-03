@@ -30,8 +30,8 @@ sleep 0.1
 eval "$(direnv export bash 2>/dev/null)"
 
 echo "✅ Switched to profile: $AIRS_PROFILE"
-if [ -n "$AIRS_MS_CLIENT_ID" ]; then
-  echo "   Credentials: $(echo $AIRS_MS_CLIENT_ID | cut -d@ -f1)"
+if [ -n "$MODEL_SECURITY_CLIENT_ID" ]; then
+  echo "   Credentials: $(echo $MODEL_SECURITY_CLIENT_ID | cut -d@ -f1)"
 else
   echo "   ⚠️  Credentials not loaded yet - try: cd .. && cd -"
 fi

@@ -62,12 +62,12 @@ def parse_args():
 
 
 def check_airs_credentials():
-    """Verify AIRS credentials are set."""
-    has_sa = os.getenv("AIRS_MS_CLIENT_ID") and os.getenv("AIRS_MS_CLIENT_SECRET")
+    """Verify AIRS Model Security credentials are set."""
+    has_sa = os.getenv("MODEL_SECURITY_CLIENT_ID") and os.getenv("MODEL_SECURITY_CLIENT_SECRET")
     has_tsg = os.getenv("TSG_ID")
 
     if not has_sa:
-        console.print("[bold red]Missing Credentials:[/bold red] Set AIRS_MS_CLIENT_ID and AIRS_MS_CLIENT_SECRET.")
+        console.print("[bold red]Missing Credentials:[/bold red] Set MODEL_SECURITY_CLIENT_ID and MODEL_SECURITY_CLIENT_SECRET.")
         return False
 
     if not has_tsg:
