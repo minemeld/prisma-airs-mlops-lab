@@ -33,6 +33,11 @@ on:
         required: false
         default: ''
 
+      skip_manifest_check:
+        description: 'Emergency override: skip manifest verification'
+        type: boolean
+        default: false
+
   workflow_run:
     workflows: ["Gate 2: Publish Model"]
     types: [completed]
@@ -185,18 +190,78 @@ jobs:
           echo "Resolved model: $MODEL_URI"
 
   # ============================================
+  # Verify Model Manifest (Gate 2 scan required)
+  # ============================================
+  verify-manifest:
+    name: "Verify Model Manifest"
+    needs: [resolve-inputs, resolve-model]
+    runs-on: ubuntu-latest
+    if: >-
+      needs.resolve-model.result == 'success' &&
+      inputs.skip_manifest_check != true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Setup Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download Manifest
+        run: |
+          MODEL_URI="${{ needs.resolve-model.outputs.model_uri }}"
+          echo "Downloading manifest from: $MODEL_URI/manifest.json"
+
+          gcloud storage cp "$MODEL_URI/manifest.json" ./manifest.json 2>/dev/null || {
+            echo "::error::No manifest.json found at $MODEL_URI"
+            echo "A manifest with Gate 2 scan record is required for deployment."
+            exit 1
+          }
+
+          echo "Manifest contents:"
+          python scripts/manifest.py show --manifest manifest.json
+
+      - name: "🛡️ Verify Gate 2 Scan Record"
+        run: |
+          echo "Verifying manifest requires Gate 2 security scan..."
+          python scripts/manifest.py verify \
+            --manifest manifest.json \
+            --require-scan gate2
+
+  # ============================================
   # Deploy Vertex AI Model Endpoint
   # ============================================
   deploy-model:
     name: "Deploy Model to Vertex AI"
-    needs: [resolve-inputs, resolve-model]
+    needs: [resolve-inputs, resolve-model, verify-manifest]
     runs-on: ubuntu-latest
-    if: needs.resolve-model.result == 'success'
+    if: >-
+      always() &&
+      needs.resolve-model.result == 'success' &&
+      (needs.verify-manifest.result == 'success' || needs.verify-manifest.result == 'skipped')
 
     outputs:
       endpoint_id: ${{ steps.endpoint.outputs.endpoint_id }}
 
     steps:
+      - name: "⚠️ Manifest Check Skipped"
+        if: needs.verify-manifest.result == 'skipped'
+        run: |
+          echo "::warning::Manifest verification was SKIPPED (emergency override active)"
+          echo "## ⚠️ Emergency Override Active" >> $GITHUB_STEP_SUMMARY
+          echo "Manifest verification was skipped. This deployment has NOT been verified by AIRS." >> $GITHUB_STEP_SUMMARY
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
@@ -338,7 +403,7 @@ jobs:
   # ============================================
   deploy:
     name: "Deploy App to Cloud Run"
-    needs: [resolve-inputs, resolve-model, deploy-model]
+    needs: [resolve-inputs, resolve-model, verify-manifest, deploy-model]
     runs-on: ubuntu-latest
     if: success()
 

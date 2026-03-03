@@ -213,6 +213,102 @@ jobs:
 
           echo "MODEL_PATH=./merged-model" >> $GITHUB_ENV
 
+      - name: Install AIRS SDK
+        env:
+          MODEL_SECURITY_CLIENT_ID: ${{ secrets.MODEL_SECURITY_CLIENT_ID }}
+          MODEL_SECURITY_CLIENT_SECRET: ${{ secrets.MODEL_SECURITY_CLIENT_SECRET }}
+          TSG_ID: ${{ secrets.TSG_ID }}
+        run: |
+          chmod +x scripts/get-pypi-url.sh
+          PYPI_URL=$(./scripts/get-pypi-url.sh)
+          pip install --extra-index-url "$PYPI_URL" -r airs/requirements.txt
+
+      - name: "🛡️ GATE 2: AIRS Security Scan"
+        id: gate2-scan
+        env:
+          MODEL_SECURITY_CLIENT_ID: ${{ secrets.MODEL_SECURITY_CLIENT_ID }}
+          MODEL_SECURITY_CLIENT_SECRET: ${{ secrets.MODEL_SECURITY_CLIENT_SECRET }}
+          TSG_ID: ${{ secrets.TSG_ID }}
+        run: |
+          echo ""
+          echo "═══════════════════════════════════════════════════════"
+          echo "  GATE 2: SCANNING MERGED MODEL FOR SECURITY THREATS"
+          echo "  Model: $MODEL_PATH"
+          echo "═══════════════════════════════════════════════════════"
+          echo ""
+
+          python airs/scan_model.py \
+            --model-path "$MODEL_PATH" \
+            --output-json gate2-scan-results.json \
+            -l gate=gate2 \
+            -l run_id=${{ github.run_id }} \
+            -l model_version=${{ needs.resolve-inputs.outputs.model_version }} \
+            -l environment=staging \
+            -l base_model=${{ needs.resolve-inputs.outputs.base_model }}
+
+          VERDICT=$(python -c "
+          import json
+          with open('gate2-scan-results.json') as f:
+              data = json.load(f)
+          v = str(data.get('eval_outcome', 'UNKNOWN'))
+          print(v.split('.')[-1].upper())
+          ")
+
+          SCAN_UUID=$(python -c "
+          import json
+          with open('gate2-scan-results.json') as f:
+              data = json.load(f)
+          print(data.get('uuid', 'unknown'))
+          ")
+
+          echo "verdict=$VERDICT" >> $GITHUB_OUTPUT
+          echo "scan_id=$SCAN_UUID" >> $GITHUB_OUTPUT
+
+          echo ""
+          echo "======================================================="
+          echo "  GATE 2 RESULT: $VERDICT"
+          echo "  Scan UUID: $SCAN_UUID"
+          echo "======================================================="
+
+      - name: Upload Scan Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gate2-scan-results
+          path: gate2-scan-results.json
+          retention-days: 30
+
+      - name: Gate 2 Scan Summary
+        if: always()
+        run: |
+          if [ -f gate2-scan-results.json ]; then
+            python -c "
+          import json
+          with open('gate2-scan-results.json') as f:
+              data = json.load(f)
+          verdict = str(data.get('eval_outcome', 'UNKNOWN')).split('.')[-1].upper()
+          summary = data.get('eval_summary', {})
+          passed = summary.get('rules_passed', 0)
+          failed = summary.get('rules_failed', 0)
+          total = summary.get('total_rules', 0)
+          scan_uuid = data.get('uuid', 'N/A')
+          sg_name = data.get('security_group_name', 'N/A')
+          badge = '✅' if verdict == 'ALLOWED' else '❌'
+          print(f'## {badge} Gate 2: AIRS Security Scan')
+          print(f'')
+          print(f'| Field | Value |')
+          print(f'|-------|-------|')
+          print(f'| **Verdict** | **{verdict}** |')
+          print(f'| Rules Passed | {passed}/{total} |')
+          print(f'| Rules Failed | {failed}/{total} |')
+          print(f'| Security Group | {sg_name} |')
+          print(f'| Scan UUID | \`{scan_uuid}\` |')
+          print(f'')
+          if verdict == 'BLOCKED':
+              print(f'> ⚠️ Model blocked by security policy. Review scan details in SCM.')
+          " >> $GITHUB_STEP_SUMMARY
+          fi
+
       - name: Publish to GCS
         id: publish-gcs
         if: success() && needs.resolve-inputs.outputs.publish_to == 'gcs'

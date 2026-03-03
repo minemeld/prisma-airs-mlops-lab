@@ -32,11 +32,11 @@ console = Console()
 # Or pass UUIDs directly via --security-group flag (no code changes needed).
 # See Module 4.2 for how to find your UUIDs.
 SECURITY_GROUPS = {
-    "local":       (UUID("a7ae2286-5a2d-4dc6-9e98-7055916725cc"), "LOCAL"),
-    "gcs-default": (UUID("c472b2b9-5823-47cd-bda1-8a83f3b536b6"), "GCS"),
-    "hf":          (UUID("0ef6dadc-70ff-4fab-b4e5-854046bb7a56"), "HUGGING_FACE"),
-    "warn":        (UUID("c472b2b9-5823-47cd-bda1-8a83f3b536b6"), "GCS"),
-    "block":       (UUID("c472b2b9-5823-47cd-bda1-8a83f3b536b6"), "GCS"),
+    "local":       (UUID("966b36d5-354b-44ca-9f03-13eb936a50ce"), "LOCAL"),
+    "gcs-default": (UUID("1f46c864-dc3c-44fe-93e7-5f799918d817"), "GCS"),
+    "hf":          (UUID("8504cea7-304e-4eee-bc15-5e16f0276c32"), "HUGGING_FACE"),
+    "warn":        (UUID("1f46c864-dc3c-44fe-93e7-5f799918d817"), "GCS"),
+    "block":       (UUID("1f46c864-dc3c-44fe-93e7-5f799918d817"), "GCS"),
 }
 
 # Default group per source type (used when --security-group is not specified)
@@ -58,6 +58,7 @@ def parse_args():
     )
     parser.add_argument("--warn-only", action="store_true", help="Treat BLOCKED verdict as warning (exit 0)")
     parser.add_argument("--output-json", help="Path to save JSON report")
+    parser.add_argument("-l", "--label", action="append", default=[], help="Label in key=value format (can be repeated)")
     return parser.parse_args()
 
 
@@ -138,7 +139,17 @@ def resolve_security_group(group_arg, source_type):
         sys.exit(1)
 
 
-def scan_model(model_path, security_group_uuid):
+def parse_labels(label_args):
+    """Parse label arguments from key=value format."""
+    labels = []
+    for item in label_args:
+        if "=" in item:
+            key, value = item.split("=", 1)
+            labels.append({"key": key, "value": value})
+    return labels
+
+
+def scan_model(model_path, security_group_uuid, labels=None):
     """Execute the scan using AIRS SDK."""
     if not AIRS_AVAILABLE:
         console.print("[bold red]model-security-client package not installed![/bold red]")
@@ -170,14 +181,19 @@ def scan_model(model_path, security_group_uuid):
         )
         client = ModelSecurityAPIClient(base_url=base_url, timeout=60.0)
 
+        # Build scan kwargs
+        scan_kwargs = dict(
+            security_group_uuid=security_group_uuid,
+            model_path=local_path,
+            model_uri=model_uri,
+            poll_timeout_secs=600,
+        )
+        if labels:
+            scan_kwargs["labels"] = labels
+
         # Trigger Scan
         with console.status("[bold green]Scanning model artifacts...[/bold green]"):
-            response = client.scan(
-                security_group_uuid=security_group_uuid,
-                model_path=local_path,
-                model_uri=model_uri,
-                poll_timeout_secs=600,
-            )
+            response = client.scan(**scan_kwargs)
 
         client.close()
 
@@ -202,8 +218,11 @@ def main():
     source_type = detect_source_type(args.model_path)
     security_group_uuid = resolve_security_group(args.security_group, source_type)
 
+    # Parse labels
+    labels = parse_labels(args.label) if args.label else None
+
     # Run scan
-    results = scan_model(args.model_path, security_group_uuid)
+    results = scan_model(args.model_path, security_group_uuid, labels=labels)
 
     # Save Report
     if args.output_json:
