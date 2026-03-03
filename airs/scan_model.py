@@ -141,11 +141,11 @@ def resolve_security_group(group_arg, source_type):
 
 def parse_labels(label_args):
     """Parse label arguments from key=value format."""
-    labels = []
+    labels = {}
     for item in label_args:
         if "=" in item:
             key, value = item.split("=", 1)
-            labels.append({"key": key, "value": value})
+            labels[key] = value
     return labels
 
 
