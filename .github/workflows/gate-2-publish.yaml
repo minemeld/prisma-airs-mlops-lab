@@ -237,6 +237,9 @@ jobs:
           echo "═══════════════════════════════════════════════════════"
           echo ""
 
+          # Sanitize label values (SDK only allows alphanumeric, hyphens, underscores)
+          BASE_MODEL_LABEL=$(echo "${{ needs.resolve-inputs.outputs.base_model }}" | tr '/' '_' | tr '.' '-')
+
           python airs/scan_model.py \
             --model-path "$MODEL_PATH" \
             --output-json gate2-scan-results.json \
@@ -244,7 +247,7 @@ jobs:
             -l run_id=${{ github.run_id }} \
             -l model_version=${{ needs.resolve-inputs.outputs.model_version }} \
             -l environment=staging \
-            -l base_model=${{ needs.resolve-inputs.outputs.base_model }}
+            -l base_model="$BASE_MODEL_LABEL"
 
           VERDICT=$(python -c "
           import json
