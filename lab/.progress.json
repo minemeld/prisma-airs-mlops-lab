@@ -2,15 +2,15 @@
   "student_id": "jlimon",
   "scenario": "ts-workshop",
   "lab_id": "mlops",
-  "current_module": 5,
-  "current_challenge": "5.4",
+  "current_module": 7,
+  "current_challenge": "7.5",
   "blockers": [],
   "modules": {
     "0": {
       "status": "complete",
       "verified": true,
-      "engagement_points": 5,
-      "points_awarded": 25,
+      "engagement_points": 4,
+      "points_awarded": 24,
       "challenges_completed": ["0.1", "0.2", "0.2b", "0.3", "0.4", "0.5"],
       "quiz_scores": {"q1": 3, "q2": 2}
     },
@@ -47,14 +47,30 @@
       "quiz_scores": {"q1": 3, "q2": 2}
     },
     "5": {
-      "status": "in_progress",
-      "verified": false,
+      "status": "complete",
+      "verified": true,
       "engagement_points": 2,
-      "points_awarded": 0,
+      "points_awarded": 14,
       "challenges_completed": ["5.0", "5.1", "5.2", "5.3", "5.4"],
-      "quiz_scores": {}
+      "quiz_scores": {"q1": 2}
+    },
+    "6": {
+      "status": "complete",
+      "verified": true,
+      "engagement_points": 2,
+      "points_awarded": 13,
+      "challenges_completed": ["6.1", "6.2", "6.3", "6.4"],
+      "quiz_scores": {"q1": 3, "q2": 2}
+    },
+    "7": {
+      "status": "complete",
+      "verified": true,
+      "engagement_points": 2,
+      "points_awarded": 13,
+      "challenges_completed": ["7.1", "7.2", "7.3", "7.4", "7.5"],
+      "quiz_scores": {"q1": 3, "q2": 2}
     }
   },
-  "leaderboard_points": 73,
+  "leaderboard_points": 112,
   "onboarding_complete": true
 }
